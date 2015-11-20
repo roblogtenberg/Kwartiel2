@@ -10,7 +10,7 @@ public class Main {
 	}
 
 	public Main() {
-		System.out.println(Arrays.toString(Algorithm1(10000)));
+		System.out.println(Arrays.toString(Algorithm1(100000)));
 		Algorithm2(6);
 		Algorithm3(6);
 	}
