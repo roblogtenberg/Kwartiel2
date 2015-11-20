@@ -16,11 +16,11 @@ public class Main {
 	}
 
 	public Main() {
-		System.out.println(Arrays.toString(Algorithm1(10000)));
-		Algorithm2(6);
+//		System.out.println(Arrays.toString(Algorithm1(10000)));
+//		Algorithm2(6);
 		// Algorithm3(1000);
 		startTime = System.currentTimeMillis();
-		System.err.println(Arrays.toString(Algorithm3(10)));
+		System.err.println(Arrays.toString(Algorithm3(25000)));
 		endTime = System.currentTimeMillis();
 		long diffInMillis = endTime - startTime;
 		tijd = diffInMillis + " milliseconds";

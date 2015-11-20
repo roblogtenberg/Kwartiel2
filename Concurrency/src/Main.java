@@ -4,14 +4,23 @@ import java.util.Random;
 public class Main {
 
 	Random r = new Random();
-	
+	long startTime;
+	long endTime;
+	long timeTaken;
+
 	public static void main(String[] args) {
 		new Main();
 	}
 
 	public Main() {
-		int[] num = createArray(25000);
-//		System.out.println(Arrays.toString(insertionSort(num)));
+		for (int i = 0; i < 10; i++) {
+			int[] num = createArray(400000);
+			startTime = System.currentTimeMillis();
+			insertionSort(num);
+			endTime = System.currentTimeMillis();
+			timeTaken = endTime - startTime;
+			System.out.println("Time: " + timeTaken + " milliseconds");
+		}
 	}
 
 	public int[] insertionSort(int[] num) {
@@ -28,30 +37,18 @@ public class Main {
 		}
 		return num;
 	}
-	
+
 	public int[] createArray(int number) {
 		int[] a = new int[number];
-		boolean ignoreZero = false;
-		for(int i = 0; i < number; i++) {
-			int input = r.nextInt(number);
-			boolean found = false;
-			for(int j = 0; j < a.length; j++) {
-				if(input == a[j]) {
-					if(input == 0 && !ignoreZero) {
-						ignoreZero = true;
-						break;
-					} else {
-						found = true;
-						break;
-					}
-				}
-			}
-			if(found) {
-				i--;
-			} else {
-				a[i] = input;
-			}
-			
+		int tempNumber;
+		int random;
+		for (int i = 0; i < number; i++) {
+			random = r.nextInt(i + 1);
+			a[i] = i;
+			tempNumber = a[i];
+			a[i] = a[random];
+			a[random] = tempNumber;
+
 		}
 		return a;
 	}
