@@ -1,17 +1,24 @@
-import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
 
 	Random r = new Random();
-	
+	long startTime;
+	long endTime;
+
 	public static void main(String[] args) {
 		new Main();
 	}
 
 	public Main() {
-		int[] num = createArray(25000);
-//		System.out.println(Arrays.toString(insertionSort(num)));
+		for (int i = 0; i < 10; i++) {
+			int[] num = createArray(800000);
+			startTime = System.currentTimeMillis();
+			insertionSort(num);
+			endTime = System.currentTimeMillis();
+			long diffInMillis = endTime - startTime;
+			System.out.println("\n" + diffInMillis + "milliseconds");
+		}
 	}
 
 	public int[] insertionSort(int[] num) {
@@ -21,37 +28,26 @@ public class Main {
 
 		for (j = 1; j < num.length; j++) { // Start with 1 (not 0)
 			key = num[j];
-			for (i = j - 1; (i >= 0) && (num[i] < key); i--) { // Smaller values are moving up
+			for (i = j - 1; (i >= 0) && (num[i] < key); i--) { // Smaller values
+																// are moving up
 				num[i + 1] = num[i];
 			}
 			num[i + 1] = key; // Put the key in its proper location
 		}
 		return num;
 	}
-	
+
 	public int[] createArray(int number) {
 		int[] a = new int[number];
-		boolean ignoreZero = false;
-		for(int i = 0; i < number; i++) {
-			int input = r.nextInt(number);
-			boolean found = false;
-			for(int j = 0; j < a.length; j++) {
-				if(input == a[j]) {
-					if(input == 0 && !ignoreZero) {
-						ignoreZero = true;
-						break;
-					} else {
-						found = true;
-						break;
-					}
-				}
-			}
-			if(found) {
-				i--;
-			} else {
-				a[i] = input;
-			}
-			
+		int tempNumber;
+		int random;
+		for (int i = 0; i < number; i++) {
+			random = r.nextInt(i + 1);
+			a[i] = i;
+			tempNumber = a[i];
+			a[i] = a[random];
+			a[random] = tempNumber;
+
 		}
 		return a;
 	}
