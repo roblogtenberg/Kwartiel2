@@ -7,7 +7,7 @@ public class Main {
 
 	long startTime;
 	long endTime;
-	String tijd;
+	long timeTaken;
 
 	Random r = new Random();
 
@@ -16,20 +16,20 @@ public class Main {
 	}
 
 	public Main() {
-//		System.out.println(Arrays.toString(Algorithm1(10000)));
-//		Algorithm2(6);
+		// System.out.println(Arrays.toString(Algorithm1(10000)));
+		// Algorithm2(6);
 		// Algorithm3(1000);
-		startTime = System.currentTimeMillis();
-		System.err.println(Arrays.toString(Algorithm3(25000)));
-		endTime = System.currentTimeMillis();
-		long diffInMillis = endTime - startTime;
-		tijd = diffInMillis + " milliseconds";
-		System.out.println("\n" + tijd);
+		for (int i = 0; i < 10; i++) {
+			startTime = System.currentTimeMillis();
+			Algorithm1(100000);
+			endTime = System.currentTimeMillis();
+			timeTaken = endTime - startTime;
+			System.out.println(timeTaken + " milliseconds");
+		}
 	}
 
 	public int[] Algorithm1(int number) {
 		int[] a = new int[number];
-		System.out.println(a.length);
 		boolean ignoreZero = false;
 		for (int i = 0; i < number; i++) {
 			int input = r.nextInt(number);
@@ -57,11 +57,15 @@ public class Main {
 
 	public void Algorithm2(int number) {
 		int[] a = new int[number];
-		int[] u = new int[number];
-		System.out.println(a.length);
+		boolean[] used = new boolean[number];
 		for (int i = 0; i < a.length; i++) {
-			u[i] = i;
-			// System.out.println(Arrays.toString(u));
+			int input = r.nextInt(number);
+			if (used[input] == true) {
+				i--;
+			} else {
+				used[input] = true;
+				a[i] = input;
+			}
 		}
 
 	}
