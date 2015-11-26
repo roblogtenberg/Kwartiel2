@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
@@ -6,20 +7,39 @@ public class Main {
 	long startTime;
 	long endTime;
 	long timeTaken;
-	
+
+	int[] first = null;
+	int[] second = null;
+
+	private static Main instance;
+
+	int timesStarted = 0;
+
 	public static void main(String[] args) {
-		new Main();
+		instance = new Main();
 	}
 
 	public Main() {
-		for (int i = 0; i < 10; i++) {
-			int[] num = createArray(800000);
+		start();
+	}
+
+	public void start() {
+		if (timesStarted < 10) {
+			int[] num = createArray(200000);
+
+			int[] part1 = new int[100000];
+			int[] part2 = new int[100000];
+
+			System.arraycopy(num, 0, part1, 0, part1.length);
+			System.arraycopy(num, part1.length, part2, 0, part2.length);
+
 			startTime = System.currentTimeMillis();
-			insertionSort(num);
-			endTime = System.currentTimeMillis();
-			long diffInMillis = endTime - startTime;
-			System.out.println("\n" + diffInMillis + "milliseconds");
+			SortThread thread1 = new SortThread(part1);
+			SortThread thread2 = new SortThread(part2);
+			thread1.start();
+			thread2.start();
 		}
+		timesStarted++;
 	}
 
 	public int[] insertionSort(int[] num) {
@@ -29,8 +49,7 @@ public class Main {
 
 		for (j = 1; j < num.length; j++) { // Start with 1 (not 0)
 			key = num[j];
-			for (i = j - 1; (i >= 0) && (num[i] < key); i--) { // Smaller values
-																// are moving up
+			for (i = j - 1; (i >= 0) && (num[i] < key); i--) {
 				num[i + 1] = num[i];
 			}
 			num[i + 1] = key; // Put the key in its proper location
@@ -51,6 +70,54 @@ public class Main {
 
 		}
 		return a;
+	}
+
+	public int[] mergeArrays(int[] a, int[] b) {
+		int[] answer = new int[a.length + b.length];
+		int i = 0, j = 0, k = 0;
+		while (i < a.length && j < b.length) {
+			if (a[i] > b[j]) {
+				answer[k] = a[i];
+				i++;
+			} else {
+				answer[k] = b[j];
+				j++;
+			}
+			k++;
+		}
+
+		while (i < a.length) {
+			answer[k] = a[i];
+			i++;
+			k++;
+		}
+
+		while (j < b.length) {
+			answer[k] = b[j];
+			j++;
+			k++;
+		}
+
+		return answer;
+	}
+
+	public void sorted(int[] array) {
+		if (first == null) {
+			first = array;
+		} else {
+			second = array;
+			Arrays.toString(mergeArrays(first, second));
+			endTime = System.currentTimeMillis();
+			timeTaken = endTime - startTime;
+			System.out.println("Time: " + timeTaken + " milliseconds");
+			first = null;
+			second = null;
+			start();
+		}
+	}
+
+	public static Main getInstance() {
+		return instance;
 	}
 
 }

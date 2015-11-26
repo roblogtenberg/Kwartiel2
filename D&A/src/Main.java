@@ -4,7 +4,7 @@ public class Main {
 
 	long startTime;
 	long endTime;
-	String tijd;
+	long timeTaken;
 
 	Random r = new Random();
 
@@ -13,6 +13,7 @@ public class Main {
 	}
 
 	public Main() {
+<<<<<<< HEAD
 		for (int i = 0; i < 10; i++) {
 			startTime = System.currentTimeMillis();
 			Algorithm3(40000000);
@@ -30,11 +31,22 @@ public class Main {
 		// long diffInMillis = endTime - startTime;
 		// tijd = diffInMillis + " milliseconds";
 		// System.out.println("\n" + tijd);
+=======
+		// System.out.println(Arrays.toString(Algorithm1(10000)));
+		// Algorithm2(6);
+		// Algorithm3(1000);
+		for (int i = 0; i < 10; i++) {
+			startTime = System.currentTimeMillis();
+			Algorithm1(100000);
+			endTime = System.currentTimeMillis();
+			timeTaken = endTime - startTime;
+			System.out.println(timeTaken + " milliseconds");
+		}
+>>>>>>> origin/master
 	}
 
 	public int[] Algorithm1(int number) {
 		int[] a = new int[number];
-		System.out.println(a.length);
 		boolean ignoreZero = false;
 		for (int i = 0; i < number; i++) {
 			int input = r.nextInt(number);
