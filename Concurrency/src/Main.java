@@ -25,10 +25,10 @@ public class Main {
 
 	public void start() {
 		if (timesStarted < 10) {
-			int[] num = createArray(200000);
+			int[] num = createArray(800000);
 
-			int[] part1 = new int[100000];
-			int[] part2 = new int[100000];
+			int[] part1 = new int[400000];
+			int[] part2 = new int[400000];
 
 			System.arraycopy(num, 0, part1, 0, part1.length);
 			System.arraycopy(num, part1.length, part2, 0, part2.length);
@@ -40,6 +40,15 @@ public class Main {
 			thread2.start();
 		}
 		timesStarted++;
+		
+//		for (int i = 0; i < 10; i++) {
+//			int[] num = createArray(25000);
+//			startTime = System.currentTimeMillis();
+//			insertionSort(num);
+//			endTime = System.currentTimeMillis();
+//			timeTaken = endTime - startTime;
+//			System.out.println("Time: " + timeTaken + " milliseconds");
+//		}
 	}
 
 	public int[] insertionSort(int[] num) {
