@@ -13,12 +13,11 @@ public class Main {
 	}
 
 	public Main() {
-		// System.out.println(Arrays.toString(Algorithm1(10000)));
-		// Algorithm2(6);
-		// Algorithm3(1000);
 		for (int i = 0; i < 10; i++) {
 			startTime = System.currentTimeMillis();
-			Algorithm1(100000);
+			// Algorithm1();
+			// Algorithm2();
+			// Algorithm3();
 			endTime = System.currentTimeMillis();
 			timeTaken = endTime - startTime;
 			System.out.println(timeTaken + " milliseconds");
