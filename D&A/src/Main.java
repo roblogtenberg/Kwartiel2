@@ -13,25 +13,6 @@ public class Main {
 	}
 
 	public Main() {
-<<<<<<< HEAD
-		for (int i = 0; i < 10; i++) {
-			startTime = System.currentTimeMillis();
-			Algorithm3(40000000);
-			endTime = System.currentTimeMillis();
-			long diffInMillis = endTime - startTime;
-			System.err.println(diffInMillis);
-		}
-
-		// // System.out.println(Arrays.toString(Algorithm1(10000)));
-		// // Algorithm2(6);
-		// // Algorithm3(1000);
-		// startTime = System.currentTimeMillis();
-		// System.err.println(Arrays.toString(Algorithm3(25000)));
-		// endTime = System.currentTimeMillis();
-		// long diffInMillis = endTime - startTime;
-		// tijd = diffInMillis + " milliseconds";
-		// System.out.println("\n" + tijd);
-=======
 		// System.out.println(Arrays.toString(Algorithm1(10000)));
 		// Algorithm2(6);
 		// Algorithm3(1000);
@@ -42,7 +23,6 @@ public class Main {
 			timeTaken = endTime - startTime;
 			System.out.println(timeTaken + " milliseconds");
 		}
->>>>>>> origin/master
 	}
 
 	public int[] Algorithm1(int number) {
