@@ -1,3 +1,4 @@
+package opdracht1;
 
 public class SortThread extends Thread {
 
