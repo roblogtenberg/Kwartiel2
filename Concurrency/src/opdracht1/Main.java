@@ -25,37 +25,37 @@ public class Main {
 	}
 
 	public void start() {
-		// if (timesStarted < 10) {
-		// int[] num = createArray(200000);
-		//
-		// int[] part1 = new int[100000];
-		// int[] part2 = new int[100000];
-		//
-		// System.arraycopy(num, 0, part1, 0, part1.length);
-		// System.arraycopy(num, part1.length, part2, 0, part2.length);
-		//
-		// startTime = System.currentTimeMillis();
-		// SortThread thread1 = new SortThread(part1);
-		// SortThread thread2 = new SortThread(part2);
-		// thread1.start();
-		// thread2.start();
-		// }
-		// timesStarted++;
-		for (int i = 0; i < 10; i++) {
-			int[] num = createArray(8000000);
-			SortRunnable sr = new SortRunnable(num);
-			Thread t = new Thread(sr);
-			startTime = System.currentTimeMillis();
-			t.start();
-			try {
-				t.join();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			endTime = System.currentTimeMillis();
-			timeTaken = endTime - startTime;
-			System.out.println("Time: " + timeTaken + "milliseconds");
-		}
+		 if (timesStarted < 10) {
+		 int[] num = createArray(25000);
+		
+		 int[] part1 = new int[12500];
+		 int[] part2 = new int[12500];
+		
+		 System.arraycopy(num, 0, part1, 0, part1.length);
+		 System.arraycopy(num, part1.length, part2, 0, part2.length);
+		
+		 startTime = System.currentTimeMillis();
+		 SortThread thread1 = new SortThread(part1);
+		 SortThread thread2 = new SortThread(part2);
+		 thread1.start();
+		 thread2.start();
+		 }
+		 timesStarted++;
+//		for (int i = 0; i < 10; i++) {
+//			int[] num = createArray(8000000);
+//			SortRunnable sr = new SortRunnable(num);
+//			Thread t = new Thread(sr);
+//			startTime = System.currentTimeMillis();
+//			t.start();
+//			try {
+//				t.join();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			endTime = System.currentTimeMillis();
+//			timeTaken = endTime - startTime;
+//			System.out.println("Time: " + timeTaken + "milliseconds");
+//		}
 	}
 
 	public int[] insertionSort(int[] num) {
