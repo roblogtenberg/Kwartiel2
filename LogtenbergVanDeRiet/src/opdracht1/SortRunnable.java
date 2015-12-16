@@ -5,7 +5,7 @@ public class SortRunnable implements Runnable{
 
 	private int[] array;
 	private int[] returnValue;
-	private int threshold = 1250;
+	private int threshold = 5000;
 	
 	public SortRunnable(int[] array) {
 		this.array = array;
