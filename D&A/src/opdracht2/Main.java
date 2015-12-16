@@ -12,10 +12,16 @@ public class Main {
 
 	public Main() {
 		// TODO Auto-generated constructor stub
+		String iets = "Hoi";
 
-		int[] heap = new int[10];
+		Integer[] heap = { 4, 9, 3, 6456, 34, 36, 22, 55, 7772, 7456, 5, 3, 3 };
 
-		TreeNode treeNode = new TreeNode(5);
-		System.err.println(treeNode.arrayToTree(heap).toString());
+		SimpleTree<Integer, String> tree = new SimpleTree<>();
+
+		for (int i = 0; i < heap.length; i++) {
+			tree.put(heap[i], iets);
+		}
+
+		tree.displayTree();
 	}
 }
