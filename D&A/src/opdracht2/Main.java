@@ -1,21 +1,16 @@
 package opdracht2;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Main {
 
-	private Random r = new Random();
-
 	public static void main(String[] args) {
-		new Main();
+		int[] numbers = {26,16,58,36,53,21,31,41};
+		RSHeap heap = new RSHeap(10);
+		heap.setInput(numbers);
+		heap.buildHeap();
+		System.out.println(Arrays.toString(heap.getHeap()));
 	}
 
-	public Main() {
-		// TODO Auto-generated constructor stub
-
-		int[] heap = new int[10];
-
-		TreeNode treeNode = new TreeNode(5);
-		System.err.println(treeNode.arrayToTree(heap).toString());
-	}
 }
