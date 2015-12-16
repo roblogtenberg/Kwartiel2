@@ -12,5 +12,4 @@ public class Main {
 		heap.buildHeap();
 		System.out.println(Arrays.toString(heap.getHeap()));
 	}
-
 }
