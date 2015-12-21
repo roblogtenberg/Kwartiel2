@@ -1,6 +1,5 @@
 package opdracht2;
 
-
 public class RSHeap {
 
 	private int[] heap;
