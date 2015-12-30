@@ -84,11 +84,11 @@ public class HeapBuilder {
 				lastHeapSorted.add(heap.getMin());
 				System.out.println("next: " + next);
 				if (next >= heap.getMin()) { // check of nieuwe getal kleiner is dan huidige root
-					System.out.println("heap getmin");
+					// System.out.println("heap getmin");
 					heap.setMin(next); // nieuw getal als root zetten
 				} else {
-					System.out.println(" in de else");
-					System.out.println("inputfileindex: " + inputFileIndex);
+					// System.out.println(" in de else");
+					// System.out.println("inputfileindex: " + inputFileIndex);
 					heap.printHeap();
 					System.out.println("heapsize: " + heap.size());
 					heap.setElement(0, heap.getElement(heap.size()));
@@ -100,15 +100,13 @@ public class HeapBuilder {
 				heap.naarBeneden(0);
 			}
 			fB.writeArrayToFile(lastHeapSorted); // schrijf array naar file
-			System.out.println(lastHeapSorted.toString());
 			lastHeapSorted.clear();
 		} while (!allesGelezen());
 		// Haalt een kopie op van de laatste heap in het geheugen
 		Heap restHeap = heap.getheap();
 		// schrijft de laatste heap naar het geheugen
 		fB.writeLastHeapToFile(restHeap);
-		System.out.println(restHeap.toString());
-	}
+ 	}
 
 	/**
 	 * haalt het volgende getal uit de reeks
