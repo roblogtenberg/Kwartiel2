@@ -35,7 +35,7 @@ public class FileBeheer {
 		for (int i = 0; i < intArray.length; i++) {
 			s += intArray[i] + seperator;
 		}
-		System.out.println(s);
+//		System.out.println(s);
 		FileWriter fw = new FileWriter(fileName);
 		fw.write(s);
 		fw.close();
@@ -93,7 +93,7 @@ public class FileBeheer {
 		// weggeschreven
 		int[] intArray = h.getHeapArray();
 		for (int x = 0; x < intArray.length; x++) {
-			System.out.println("getal: " + intArray[x]);
+//			System.out.println("getal: " + intArray[x]);
 		}
 		// System.out.println("heapsize: " + intArray.length);
 		for (int i = 0; i < intArray.length; i++) {
