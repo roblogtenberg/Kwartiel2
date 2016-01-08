@@ -138,8 +138,7 @@ public class Heap {
 	public Heap getheap() {
 		// je geeft kopie want je wilt niet dat heap van buiten deze class kan worden aangepast
 		Heap heapcopy = this;
-
-		return this;
+		return heapcopy;
 	}
 
 	/**

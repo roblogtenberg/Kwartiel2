@@ -65,12 +65,7 @@ public class HeapBuilder {
 	 *             vanwege gebruik van bestanden
 	 */
 	public void createRuns() throws IOException {
-		// doet zolang er nog elementen zijn om te lezen (bestand nog niet
-		// volledig)
-		// de do while blijkt runs efficienter te doen dan de reguliere while
-		// het verschil bleek zo'n 10% te zijn (250 runs verwacht werd 280, 50
-		// runs verwacht werden er 55 en 10 runs verwacht werden er 12)
-		do {
+		 while (!allesGelezen()) {
 			heap = buildHeap();
 			aantalRuns++;
 
@@ -78,19 +73,11 @@ public class HeapBuilder {
 			// nog wat in de heap zitten
 			while (heap.size() > -1 && !allesGelezen()) {
 				int next = getNext();
-				heap.printHeap();
-				System.out.println("---wegschrijven van: " + heap.getMin() + " voor de output file");
-				System.out.println("runs: " + aantalRuns);
 				lastHeapSorted.add(heap.getMin());
-				System.out.println("next: " + next);
 				if (next >= heap.getMin()) { // check of nieuwe getal kleiner is dan huidige root
 					// System.out.println("heap getmin");
 					heap.setMin(next); // nieuw getal als root zetten
 				} else {
-					// System.out.println(" in de else");
-					// System.out.println("inputfileindex: " + inputFileIndex);
-					heap.printHeap();
-					System.out.println("heapsize: " + heap.size());
 					heap.setElement(0, heap.getElement(heap.size()));
 					// als laatste kleiner is dan de root zet laatste als root
 					heap.setElement(heap.size(), next); // zet nieuw element op plek van laatste
@@ -101,7 +88,7 @@ public class HeapBuilder {
 			}
 			fB.writeArrayToFile(lastHeapSorted); // schrijf array naar file
 			lastHeapSorted.clear();
-		} while (!allesGelezen());
+		}
 		// Haalt een kopie op van de laatste heap in het geheugen
 		Heap restHeap = heap.getheap();
 		// schrijft de laatste heap naar het geheugen
@@ -114,9 +101,7 @@ public class HeapBuilder {
 	 * @return het nieuwe getal
 	 */
 	public int getNext() {
-		System.out.println("inputFileIndex: " + inputFileIndex);
 		int tmpInt = input[inputFileIndex];
-		System.out.println("tmpInt: " + tmpInt);
 		inputFileIndex++;
 		return tmpInt;
 	}
