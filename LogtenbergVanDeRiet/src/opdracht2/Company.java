@@ -63,12 +63,8 @@ public class Company {
 		@Override
 		public void run() {
 			while (true) {
+				invitation.tryAcquire();
 				work();
-				try {
-					invitation.acquire();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
 			}
 		}
 

@@ -1,9 +1,10 @@
-package opdracht2;
+package opdracht3;
 
 public class Main {
 
 	public static void main(String[] args) {
-		new Company();
+		// TODO Auto-generated method stub
+
 	}
+
 }
-  
