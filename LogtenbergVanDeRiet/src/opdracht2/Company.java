@@ -69,15 +69,12 @@ public class Company {
 		public void run() {
 			setName("programmer");
 			while (true) {
-<<<<<<< HEAD
-				invitation.tryAcquire();
-				work();
-=======
 				try {
 					available.release();
 					if(consulting.availablePermits() > 0) {
 						invitation.acquire();
 						readyForConversation.release();
+						userConsultation.acquire();
 						consult();
 					}
 					available.acquire();
@@ -85,7 +82,6 @@ public class Company {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
->>>>>>> origin/master
 			}
 		}
 
@@ -117,13 +113,16 @@ public class Company {
 				try {
 					problem.acquire();
 					available.acquire();
+					
 					int permits = problem.availablePermits() + 1;
-					problem.drainPermits();
+					System.out.println("Permits drained: " + problem.drainPermits());
 					invitation.release(permits);
 					readyForConversation.acquire(permits);
 					userConsultation.release(permits);
 					consulting.release();
+					
 					consult();
+					
 					consulting.acquire();
 					available.release();
 				} catch (InterruptedException e) {
