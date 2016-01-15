@@ -1,17 +1,15 @@
 package opdracht3;
 
-import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class AutoRAI {
 
-	private static final int NR_OF_AVAILABLEPLACES = 10;
 	private int nrOfBuyers = 0;
 	private int nrOfBuyersInside = 0;
 	private int nrOfBuyersAchterElkaar = 0;
-	private int maxNrOfBuyersAchterElkaar = 0;
+	private int maxNrOfBuyersAchterElkaar = 3;
 	private int maxNrOfBuyers = 0;
 	private int nrOfWaitingBuyers = 0;
 	private int nrOfVisitors = 0;
@@ -29,7 +27,7 @@ public class AutoRAI {
 
 	public void toAutoRAI() throws InterruptedException {
 		if (Thread.currentThread().getClass() == Visitor.class) {
-			System.out.println("Er meld zich een berzoeker");
+			System.out.println("Bezoeker: " + Thread.currentThread().getName() + " meld zich");
 			nrOfWaitingVisitors++;
 			while (nrOfWaitingBuyers > 0 || buyerInBuiling == true) {
 				if (nrOfBuyersInside >= maxNrOfBuyers && buyerInBuiling == false) {
@@ -40,7 +38,7 @@ public class AutoRAI {
 			nrOfWaitingVisitors++;
 			nrOfVisitorsInside++;
 		} else if (Thread.currentThread().getClass() == Buyer.class) {
-			System.out.println("Er meld zich een koper");
+			System.out.println("Koper: " + Thread.currentThread().getName() + " meld zich");
 			nrOfWaitingBuyers++;
 			while (nrOfVisitorsInside > 0 || buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
 				buyerMayInside.await();
@@ -52,6 +50,39 @@ public class AutoRAI {
 	}
 
 	public void leaveAutoRAI() {
+		if (Thread.currentThread().getClass() == Visitor.class) {
+			System.out.println("Bezoeker: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
+			nrOfVisitorsInside--;
+			nrOfBuyersAchterElkaar = 0;
+		}
 
+		if (Thread.currentThread().getClass() == Buyer.class) {
+			System.out.println("Koper: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
+			buyerInBuiling = false;
+		}
+
+		if (nrOfWaitingBuyers > 0) {
+			System.out.println("Wachtende kopers = " + nrOfWaitingBuyers);
+
+			if (nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
+				System.out.println("Te veel kopers achter elkaar!");
+				if (nrOfVisitors == 0) {
+					System.out.println("Er is geen bezoeker aan het wachten dus teller verlagen met 1");
+					nrOfBuyersAchterElkaar--;
+					buyerMayInside.signal();
+				} else {
+					sendAllVisitors();
+				}
+			} else {
+				buyerMayInside.signal();
+			}
+		}
+	}
+
+	private void sendAllVisitors() {
+		System.out.println("Aantal lui kunnen naar binnen");
+		for (int i = 0; i < nrOfWaitingVisitors; i++) {
+			visitorMayInside.signal();
+		}
 	}
 }

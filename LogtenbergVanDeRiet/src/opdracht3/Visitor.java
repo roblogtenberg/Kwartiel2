@@ -3,7 +3,8 @@ package opdracht3;
 public class Visitor extends Thread {
 	private AutoRAI autoRAI;
 
-	public Visitor() {
+	public Visitor(String name) {
+		super(name);
 		autoRAI = new AutoRAI();
 	}
 
@@ -22,6 +23,15 @@ public class Visitor extends Thread {
 	}
 
 	private void justLive() throws InterruptedException {
-		Thread.sleep((int) Math.random() * 1000);
+		System.out.println(getVisitorName() + " living");
+		Thread.sleep((int) 5 * 1000);
+	}
+
+	private void kijken() throws InterruptedException {
+		System.out.println("Bezoeker: " + getVisitorName() + " is aan het rondkijken");
+	}
+
+	private String getVisitorName() {
+		return getName();
 	}
 }
