@@ -10,7 +10,7 @@ public class AutoRAI {
 	private int nrOfBuyersInside = 0;
 	private int nrOfBuyersAchterElkaar = 0;
 	private int maxNrOfBuyersAchterElkaar = 3;
-	private int maxNrOfBuyers = 0;
+	private int maxNrOfBuyers = 3;
 	private int nrOfWaitingBuyers = 0;
 	private int nrOfVisitors = 0;
 	private int nrOfVisitorsInside = 0;
@@ -23,6 +23,8 @@ public class AutoRAI {
 	public AutoRAI() {
 		lock = new ReentrantLock();
 		placesAvailable = lock.newCondition();
+		visitorMayInside = lock.newCondition();
+		buyerMayInside = lock.newCondition();
 	}
 
 	public void toAutoRAI() throws InterruptedException {

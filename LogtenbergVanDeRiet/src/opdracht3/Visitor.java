@@ -11,10 +11,10 @@ public class Visitor extends Thread {
 	public void run() {
 		while (true) {
 			try {
-				justLive();
 				autoRAI.toAutoRAI();
 				kijken();
 				autoRAI.leaveAutoRAI();
+				justLive();
 
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -23,8 +23,8 @@ public class Visitor extends Thread {
 	}
 
 	private void justLive() throws InterruptedException {
-		System.out.println(getVisitorName() + " living");
-		Thread.sleep((int) 5 * 1000);
+		System.out.println("Bezoeker: " + getVisitorName() + " is living");
+		Thread.sleep((int) 3 * 1000);
 	}
 
 	private void kijken() throws InterruptedException {
