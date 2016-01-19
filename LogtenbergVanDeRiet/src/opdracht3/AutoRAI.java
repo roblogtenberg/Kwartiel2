@@ -10,7 +10,7 @@ public class AutoRAI {
 	private int nrOfBuyersInside = 0;
 	private int nrOfBuyersAchterElkaar = 0;
 	private int maxNrOfBuyersAchterElkaar = 3;
-	private int maxNrOfBuyers = 3;
+	private int maxNrOfBuyers = 0;
 	private int nrOfWaitingBuyers = 0;
 	private int nrOfVisitors = 0;
 	private int nrOfVisitorsInside = 0;
@@ -28,30 +28,38 @@ public class AutoRAI {
 	}
 
 	public void toAutoRAI() throws InterruptedException {
-		if (Thread.currentThread().getClass() == Visitor.class) {
-			System.out.println("Bezoeker: " + Thread.currentThread().getName() + " meld zich");
-			nrOfWaitingVisitors++;
-			while (nrOfWaitingBuyers > 0 || buyerInBuiling == true) {
-				if (nrOfBuyersInside >= maxNrOfBuyers && buyerInBuiling == false) {
-					break;
+		try {
+			lock.lock();
+			if (Thread.currentThread().getClass() == Visitor.class) {
+				System.out.println("Bezoeker: " + Thread.currentThread().getName() + " meld zich");
+				nrOfWaitingVisitors++;
+				while (nrOfWaitingBuyers > 0 || buyerInBuiling == true) {
+					if (nrOfBuyersInside >= maxNrOfBuyers && buyerInBuiling == false) {
+						break;
+					}
+					visitorMayInside.await();
 				}
-				visitorMayInside.await();
+				nrOfWaitingVisitors++;
+				nrOfVisitorsInside++;
+			} else if (Thread.currentThread().getClass() == Buyer.class) {
+				System.out.println("Koper: " + Thread.currentThread().getName() + " meld zich");
+				nrOfWaitingBuyers++;
+				while (nrOfVisitorsInside > 0 || buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
+					buyerMayInside.await();
+				}
+				buyerInBuiling = true;
+				nrOfWaitingBuyers--;
+				nrOfBuyersAchterElkaar++;
 			}
-			nrOfWaitingVisitors++;
-			nrOfVisitorsInside++;
-		} else if (Thread.currentThread().getClass() == Buyer.class) {
-			System.out.println("Koper: " + Thread.currentThread().getName() + " meld zich");
-			nrOfWaitingBuyers++;
-			while (nrOfVisitorsInside > 0 || buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
-				buyerMayInside.await();
-			}
-			buyerInBuiling = true;
-			nrOfWaitingBuyers--;
-			nrOfBuyersAchterElkaar++;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			lock.unlock();
 		}
 	}
 
 	public void leaveAutoRAI() {
+
 		if (Thread.currentThread().getClass() == Visitor.class) {
 			System.out.println("Bezoeker: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
 			nrOfVisitorsInside--;
