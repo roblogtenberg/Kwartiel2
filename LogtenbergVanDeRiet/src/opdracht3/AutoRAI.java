@@ -48,7 +48,7 @@ public class AutoRAI {
 		}
 	}
 
-	public void toAutoRAIAsBuyer(Buyer buyer) throws InterruptedException {
+	public void toAutoRAIAsBuyer() throws InterruptedException {
 		lock.lock();
 
 		try {
@@ -67,7 +67,7 @@ public class AutoRAI {
 		}
 	}
 
-	public void leaveAutoRAIAsBuyer(Buyer buyer) throws InterruptedException {
+	public void leaveAutoRAIAsBuyer() throws InterruptedException {
 		lock.lock();
 
 		try {
@@ -90,7 +90,7 @@ public class AutoRAI {
 		}
 	}
 
-	public void leaveAutoRAIAsVisitor(int id) throws InterruptedException {
+	public void leaveAutoRAIAsVisitor() throws InterruptedException {
 		lock.lock();
 
 		try {

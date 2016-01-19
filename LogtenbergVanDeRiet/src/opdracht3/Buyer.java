@@ -18,11 +18,11 @@ public class Buyer extends Thread {
 			try {
 				justLive();
 				System.out.println("Koper " + id + " : Ik sta in de rij");
-				autorai.toAutoRAIAsBuyer(buyer);
+				autorai.toAutoRAIAsBuyer();
 				System.out.println("Koper " + id + " : Ik ga naar binnen om een auto te kopen");
 				buyCar();
 				System.out.println("Koper " + id + " : een auto gekocht");
-				autorai.leaveAutoRAIAsBuyer(buyer);
+				autorai.leaveAutoRAIAsBuyer();
 				Thread.sleep(50000);// tijd dat de koper geen auto mag kopen
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -41,7 +41,7 @@ public class Buyer extends Thread {
 
 	public void buyCar() {
 		try {
-			System.out.println("Koper " + id + " : Zoekt naar een auto");
+			System.out.println("Koper " + id + " : Ik zoek naar een auto");
 			Thread.sleep(7000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
