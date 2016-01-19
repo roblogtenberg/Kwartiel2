@@ -3,7 +3,6 @@ package opdracht3;
 public class Buyer extends Thread {
 
 	private int id;
-	private Buyer buyer;
 	AutoRAI autorai;
 
 	public Buyer(int id, AutoRAI autoRAI) {
@@ -23,7 +22,7 @@ public class Buyer extends Thread {
 				buyCar();
 				System.out.println("Koper " + id + " : een auto gekocht");
 				autorai.leaveAutoRAIAsBuyer();
-				Thread.sleep(50000);// tijd dat de koper geen auto mag kopen
+				Thread.sleep((int) Math.random() * 1000);// tijd dat de koper geen auto mag kopen
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -32,7 +31,7 @@ public class Buyer extends Thread {
 
 	public void justLive() {
 		try {
-			Thread.sleep(3000);
+			Thread.sleep((int) Math.random() * 1000);
 			System.out.println("Koper " + id + " : Gewoon chillen");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -42,7 +41,8 @@ public class Buyer extends Thread {
 	public void buyCar() {
 		try {
 			System.out.println("Koper " + id + " : Ik zoek naar een auto");
-			Thread.sleep(7000);
+			Thread.sleep((int) Math.random() * 1000);
+			System.out.println("Koper " + id + " : Ik heb een auto gevonden");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
