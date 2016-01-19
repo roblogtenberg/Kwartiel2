@@ -6,93 +6,125 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class AutoRAI {
 
-	private int nrOfBuyers = 0;
-	private int nrOfBuyersInside = 0;
-	private int nrOfBuyersAchterElkaar = 0;
-	private int maxNrOfBuyersAchterElkaar = 3;
-	private int maxNrOfBuyers = 0;
-	private int nrOfWaitingBuyers = 0;
-	private int nrOfVisitors = 0;
-	private int nrOfVisitorsInside = 0;
-	private int nrOfWaitingVisitors = 0;
-	private boolean buyerInBuiling = false;
-
-	Lock lock;
-	private Condition placesAvailable, visitorMayInside, buyerMayInside;
+	private Lock lock;
+	private Condition insideAsVisitor, insideAsBuyer;
+	private final int MAX_PEOPLE_INSIDE = 10;
+	private int nrOfPeopleInside;// aantal personen binnen
+	private int nrOfBuyersAchterElkaar, nrOfBuyersInRow, nrOfVisitorsAchterElkaar;
+	private boolean ignoreBuyersInRow;// boolean om kopers in de rij te negeren
 
 	public AutoRAI() {
 		lock = new ReentrantLock();
-		placesAvailable = lock.newCondition();
-		visitorMayInside = lock.newCondition();
-		buyerMayInside = lock.newCondition();
+		insideAsVisitor = lock.newCondition();
+		insideAsBuyer = lock.newCondition();
+
 	}
 
-	public void toAutoRAI() throws InterruptedException {
+	public boolean full() {
+		return nrOfPeopleInside >= MAX_PEOPLE_INSIDE;
+	}
+
+	public boolean empty() {
+		return nrOfPeopleInside == 0;
+	}
+
+	public boolean noBuyerInRow() {
+		return nrOfBuyersInRow == 0;
+	}
+
+	public void toAutoRAIAsVisitor() throws InterruptedException {
+		lock.lock();
+
 		try {
-			lock.lock();
-			if (Thread.currentThread().getClass() == Visitor.class) {
-				System.out.println("Bezoeker: " + Thread.currentThread().getName() + " meld zich");
-				nrOfWaitingVisitors++;
-				while (nrOfWaitingBuyers > 0 || buyerInBuiling == true) {
-					if (nrOfBuyersInside >= maxNrOfBuyers && buyerInBuiling == false) {
-						break;
-					}
-					visitorMayInside.await();
-				}
-				nrOfWaitingVisitors++;
-				nrOfVisitorsInside++;
-			} else if (Thread.currentThread().getClass() == Buyer.class) {
-				System.out.println("Koper: " + Thread.currentThread().getName() + " meld zich");
-				nrOfWaitingBuyers++;
-				while (nrOfVisitorsInside > 0 || buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
-					buyerMayInside.await();
-				}
-				buyerInBuiling = true;
-				nrOfWaitingBuyers--;
-				nrOfBuyersAchterElkaar++;
+			// wachten als de preconditie klopt en doorgaan als die niet klopt
+			while (full() || (!noBuyerInRow() && !ignoreBuyersInRow)) {
+				insideAsVisitor.await();
+
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			// aantal kijkers achter elkaar verhogen, zodat je weet dat er weer een koper naar
+			// mag nadat er achter 10 kijkers naar binnen zijn gegaan
+			nrOfVisitorsAchterElkaar++;
+			// de aantal kopers achter elkaar op 0 zetten, zodat kopers weer naar binnen kunnen
+			nrOfBuyersAchterElkaar = 0;
+			nrOfPeopleInside++;// aantal personen binnen verhogen
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	public void leaveAutoRAI() {
+	public void toAutoRAIAsBuyer(Buyer buyer) throws InterruptedException {
 
-		if (Thread.currentThread().getClass() == Visitor.class) {
-			System.out.println("Bezoeker: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
-			nrOfVisitorsInside--;
-			nrOfBuyersAchterElkaar = 0;
+		lock.lock();
+
+		try {
+			nrOfBuyersInRow++;// aantal kopers in de rij verhogen
+			// wachten als de preconditie klopt en doorgaan als die niet klopt
+			while (!empty() && nrOfBuyersAchterElkaar <= 4) {
+				// als aantal kopers achter elkaar >4 dan mogen kopers genegeerd worden door kijker
+				if (nrOfBuyersAchterElkaar >= 4) {
+					ignoreBuyersInRow = true;
+				}
+				insideAsBuyer.await();
+
+			}
+			// aantal kopers achter elkaar verhogen zodat er na 4 keer achter elkaar kijkers weer na
+			// binnen mogen
+			nrOfBuyersAchterElkaar++;
+			nrOfPeopleInside = 10;// vol maken
+
+		} finally {
+			lock.unlock();
 		}
+	}
 
-		if (Thread.currentThread().getClass() == Buyer.class) {
-			System.out.println("Koper: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
-			buyerInBuiling = false;
-		}
+	public void leaveAutoRAIAsBuyer(Buyer buyer) throws InterruptedException {
+		lock.lock();
 
-		if (nrOfWaitingBuyers > 0) {
-			System.out.println("Wachtende kopers = " + nrOfWaitingBuyers);
+		try {
 
-			if (nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
-				System.out.println("Te veel kopers achter elkaar!");
-				if (nrOfVisitors == 0) {
-					System.out.println("Er is geen bezoeker aan het wachten dus teller verlagen met 1");
-					nrOfBuyersAchterElkaar--;
-					buyerMayInside.signal();
-				} else {
-					sendAllVisitors();
+			System.out.println("een koper gaat naar buiten");
+
+			nrOfPeopleInside = 0;// niemand meer binnen
+			nrOfBuyersInRow--;// kopers in de rij verlagen
+			// signaal naar 10 kijkers
+			if (nrOfBuyersAchterElkaar >= 4) {
+				ignoreBuyersInRow = true;
+				System.out.println("kijkers geroepen");
+				for (int i = 0; i < MAX_PEOPLE_INSIDE; i++) {
+					insideAsVisitor.signal();
+
 				}
 			} else {
-				buyerMayInside.signal();
+				// signaal naar kopers
+				insideAsBuyer.signal();
 			}
+
+		} finally {
+
+			lock.unlock();
 		}
 	}
 
-	private void sendAllVisitors() {
-		System.out.println("Aantal lui kunnen naar binnen");
-		for (int i = 0; i < nrOfWaitingVisitors; i++) {
-			visitorMayInside.signal();
+	public void leaveAutoRAIAsVisitor(int id) throws InterruptedException {
+		lock.lock();
+
+		try {
+			// zorgen dat kopers ,na 10x naar binnen zijn, niet meer genegeerd worden
+			if (nrOfVisitorsAchterElkaar >= 10) {
+				ignoreBuyersInRow = false;
+			}
+			nrOfPeopleInside--;// aantal personen binnen verlagen
+			System.out.println("aantal kijkers binnen: " + nrOfPeopleInside);
+			// signaal naar koper als er een koper in de rij staat en iedereen eruit is
+			if (empty() && !noBuyerInRow()) {
+				insideAsBuyer.signal();
+				// signaal naar kijker als er geen koper in de rij staat
+			} else if (noBuyerInRow()) {
+				insideAsVisitor.signal();
+			}
+		} finally {
+			lock.unlock();
 		}
 	}
+
 }
