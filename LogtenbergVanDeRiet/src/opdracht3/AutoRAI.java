@@ -9,9 +9,9 @@ public class AutoRAI {
 	private Lock lock;
 	private Condition insideAsVisitor, insideAsBuyer;
 	private final int MAX_PEOPLE_INSIDE = 10;
-	private int nrOfPeopleInside;// aantal personen binnen
+	private int nrOfPeopleInside;
 	private int nrOfBuyersAchterElkaar, nrOfBuyersInRow, nrOfVisitorsAchterElkaar;
-	private boolean ignoreBuyersInRow;// boolean om kopers in de rij te negeren
+	private boolean ignoreBuyersInRow;
 
 	public AutoRAI() {
 		lock = new ReentrantLock();
@@ -36,41 +36,31 @@ public class AutoRAI {
 		lock.lock();
 
 		try {
-			// wachten als de preconditie klopt en doorgaan als die niet klopt
 			while (full() || (!noBuyerInRow() && !ignoreBuyersInRow)) {
 				insideAsVisitor.await();
 
 			}
-			// aantal kijkers achter elkaar verhogen, zodat je weet dat er weer een koper naar
-			// mag nadat er achter 10 kijkers naar binnen zijn gegaan
 			nrOfVisitorsAchterElkaar++;
-			// de aantal kopers achter elkaar op 0 zetten, zodat kopers weer naar binnen kunnen
 			nrOfBuyersAchterElkaar = 0;
-			nrOfPeopleInside++;// aantal personen binnen verhogen
+			nrOfPeopleInside++;
 		} finally {
 			lock.unlock();
 		}
 	}
 
 	public void toAutoRAIAsBuyer(Buyer buyer) throws InterruptedException {
-
 		lock.lock();
 
 		try {
-			nrOfBuyersInRow++;// aantal kopers in de rij verhogen
-			// wachten als de preconditie klopt en doorgaan als die niet klopt
+			nrOfBuyersInRow++;
 			while (!empty() && nrOfBuyersAchterElkaar <= 4) {
-				// als aantal kopers achter elkaar >4 dan mogen kopers genegeerd worden door kijker
 				if (nrOfBuyersAchterElkaar >= 4) {
 					ignoreBuyersInRow = true;
 				}
 				insideAsBuyer.await();
-
 			}
-			// aantal kopers achter elkaar verhogen zodat er na 4 keer achter elkaar kijkers weer na
-			// binnen mogen
 			nrOfBuyersAchterElkaar++;
-			nrOfPeopleInside = 10;// vol maken
+			nrOfPeopleInside = 10;
 
 		} finally {
 			lock.unlock();
@@ -84,23 +74,18 @@ public class AutoRAI {
 
 			System.out.println("een koper gaat naar buiten");
 
-			nrOfPeopleInside = 0;// niemand meer binnen
-			nrOfBuyersInRow--;// kopers in de rij verlagen
-			// signaal naar 10 kijkers
+			nrOfPeopleInside = 0;
+			nrOfBuyersInRow--;
 			if (nrOfBuyersAchterElkaar >= 4) {
 				ignoreBuyersInRow = true;
 				System.out.println("kijkers geroepen");
 				for (int i = 0; i < MAX_PEOPLE_INSIDE; i++) {
 					insideAsVisitor.signal();
-
 				}
 			} else {
-				// signaal naar kopers
 				insideAsBuyer.signal();
 			}
-
 		} finally {
-
 			lock.unlock();
 		}
 	}
@@ -109,16 +94,13 @@ public class AutoRAI {
 		lock.lock();
 
 		try {
-			// zorgen dat kopers ,na 10x naar binnen zijn, niet meer genegeerd worden
 			if (nrOfVisitorsAchterElkaar >= 10) {
 				ignoreBuyersInRow = false;
 			}
-			nrOfPeopleInside--;// aantal personen binnen verlagen
+			nrOfPeopleInside--;
 			System.out.println("aantal kijkers binnen: " + nrOfPeopleInside);
-			// signaal naar koper als er een koper in de rij staat en iedereen eruit is
 			if (empty() && !noBuyerInRow()) {
 				insideAsBuyer.signal();
-				// signaal naar kijker als er geen koper in de rij staat
 			} else if (noBuyerInRow()) {
 				insideAsVisitor.signal();
 			}
@@ -126,5 +108,4 @@ public class AutoRAI {
 			lock.unlock();
 		}
 	}
-
 }

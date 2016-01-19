@@ -21,10 +21,8 @@ public class Visitor extends Thread {
 				watchCars();
 				System.out.println("Kijker " + id + " : Ik ben klaar met kijken en ga weg");
 				autoRAI.leaveAutoRAIAsVisitor(id);
-
-				Thread.sleep(20000);// na het kijken mag die even uitrusten
+				Thread.sleep(20000);// na het bezoeken krijgt de bezoeker gratis eten en mag daar van genieten
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -33,20 +31,18 @@ public class Visitor extends Thread {
 
 	public void justLive() {
 		try {
-			Thread.sleep((long) (Math.random() * 10000));
+			Thread.sleep(5000);
 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void watchCars() {
 		try {
-			Thread.sleep((long) (Math.random() * 10000));
+			Thread.sleep(6000);
 
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

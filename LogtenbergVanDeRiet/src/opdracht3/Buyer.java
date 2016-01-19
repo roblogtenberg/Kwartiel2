@@ -23,7 +23,7 @@ public class Buyer extends Thread {
 				buyCar();
 				System.out.println("Koper " + id + " : een auto gekocht");
 				autorai.leaveAutoRAIAsBuyer(buyer);
-				Thread.sleep(50000);// hij mag even niets halen
+				Thread.sleep(50000);// tijd dat de koper geen auto mag kopen
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -32,19 +32,17 @@ public class Buyer extends Thread {
 
 	public void justLive() {
 		try {
-			Thread.sleep((long) (Math.random() * 30000) + 10000);
-			System.out.println("Koper " + id + " : "
-					+ "Gewoon chillen");
+			Thread.sleep(3000);
+			System.out.println("Koper " + id + " : Gewoon chillen");
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public void buyCar() {
 		try {
-			System.out.println("Koper " + id + " :Zoeken naar auto");
-			Thread.sleep((long) (Math.random() * 20000));
+			System.out.println("Koper " + id + " : Zoekt naar een auto");
+			Thread.sleep(7000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
