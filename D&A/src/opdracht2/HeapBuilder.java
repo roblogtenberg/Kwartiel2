@@ -71,12 +71,12 @@ public class HeapBuilder {
 
 			// while checkt voor of er nog elementen zijn om te lezen en of er
 			// nog wat in de heap zitten
-			while (heap.size() > -1 && !allesGelezen()) {
+			while (heap.size() >= 0 && !allesGelezen()) {
 				int next = getNext();
 				lastHeapSorted.add(heap.getMin());
-				if (next >= heap.getMin()) { // check of nieuwe getal kleiner is dan huidige root
+				if (next >= heap.getMin()) { 
 					// System.out.println("heap getmin");
-					heap.setMin(next); // nieuw getal als root zetten
+					heap.setMin(next); 
 				} else {
 					heap.setElement(0, heap.getElement(heap.size()));
 					// als laatste kleiner is dan de root zet laatste als root

@@ -147,6 +147,22 @@ public class HeapTest {
 	}
 
 	@Test
+	public void heapTest() throws IOException {
+		int heapSize = 10;
+		int N = 10000; // aantal getallen om te sorteren
+		FileBeheer fb = new FileBeheer(fileNameOutput);
+		int[] intarrayWrite = g.generate(N);
+
+		fb.writetofile(intarrayWrite, seperator, fileNameInput);
+		ArrayList<Integer> arrayListFromFile = fb.getArrayFromFile(fileNameInput, seperator);
+		Integer[] intArray = fb.arraylistToArray(arrayListFromFile);
+
+		HeapBuilder hb = new HeapBuilder(intArray, heapSize, fb);
+		hb.createRuns();
+		System.out.println("h10, a10000: runs: " + hb.getRuns() + " . Verwachte runs: " + ((intArray.length / heapSize) / 2));
+	}
+	
+	@Test
 	public void test_Handmatige_test() throws IOException {
 		int heapSize = 3;
 		FileBeheer fb = new FileBeheer(fileNameOutput);

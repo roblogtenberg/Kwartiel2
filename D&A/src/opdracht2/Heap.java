@@ -11,26 +11,6 @@ public class Heap {
 		size = -1;
 	}
 
-	private int leftchildPosition(int pos) {
-		int leftchildpos = 0;
-		if (pos % 2 == 0) {
-			leftchildpos = (pos + 1) + (pos);
-		} else {
-			leftchildpos = 2 * pos + 1;
-		}
-		return 2 * pos;
-	}
-
-	private int leftchildValue(int pos) {
-		int leftchildpos = 0;
-		if (pos % 2 == 0) {
-			leftchildpos = (pos + 1) + (pos);
-		} else {
-			leftchildpos = 2 * pos + 1;
-		}
-		return getElement(leftchildpos);
-	}
-
 	private int parent(int pos) {
 		int returnint = 0;
 		if (pos % 2 == 0) {
@@ -124,10 +104,9 @@ public class Heap {
 	public void naarBeneden(int position) {
 		int smallestchild;
 		while (!isleaf(position)) {
-			smallestchild = leftchildPosition(position);
+			smallestchild = position * 2;
 			if ((smallestchild < size) && (heap[smallestchild] > heap[smallestchild + 1]))
-				smallestchild = smallestchild + 1; // links + 1 is het rechter
-													// kind
+				smallestchild = smallestchild + 1; 
 			if (heap[position] <= heap[smallestchild])
 				return;
 			swap(position, smallestchild);
@@ -136,7 +115,6 @@ public class Heap {
 	}
 
 	public Heap getheap() {
-		// je geeft kopie want je wilt niet dat heap van buiten deze class kan worden aangepast
 		Heap heapcopy = this;
 		return heapcopy;
 	}
