@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class MainClass {
 	public static void main(String[] args) throws IOException {
-		heap20Array100Random();
+		heap20Array50Descending();
 	}
 	
 	public static void heap20Array50() throws IOException {
