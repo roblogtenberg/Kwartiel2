@@ -7,6 +7,7 @@ public class Vertex {
 
 	private String name;
 	private Map<Vertex, Integer> edges;
+	private int earliest, latest;
 	
 	public Vertex(String name) {
 		this.name = name;
@@ -17,6 +18,14 @@ public class Vertex {
 		edges.put(vertex, weight);
 	}
 
+	public void setEarliest(int earliest) {
+		this.earliest = earliest;
+	}
+	
+	public void setLatest(int latest) {
+		this.latest = latest;
+	}
+	
 	public int getEdgeWeight(Vertex end) {
 		return edges.get(end);
 	}
@@ -27,6 +36,14 @@ public class Vertex {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public int getEarliest() {
+		return earliest;
+	}
+	
+	public int getLatest() {
+		return latest;
 	}
 	
 	@Override
