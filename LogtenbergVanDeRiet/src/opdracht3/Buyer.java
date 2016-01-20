@@ -1,13 +1,18 @@
 package opdracht3;
 
+import java.util.Random;
+
 public class Buyer extends Thread {
 
 	private int id;
-	AutoRAI autorai;
+	private AutoRAI autorai;
+	private Random random;
+	private int wait;
 
 	public Buyer(int id, AutoRAI autoRAI) {
 		this.id = id;
 		autorai = autoRAI;
+		random = new Random();
 	}
 
 	@Override
@@ -22,7 +27,8 @@ public class Buyer extends Thread {
 				buyCar();
 				System.out.println("Koper " + id + " : een auto gekocht");
 				autorai.leaveAutoRAIAsBuyer();
-				Thread.sleep((int) Math.random() * 1000);// tijd dat de koper geen auto mag kopen
+				wait = (random.nextInt(4) * 1000);
+				Thread.sleep(wait);// tijd dat de koper geen auto mag kopen
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -31,8 +37,9 @@ public class Buyer extends Thread {
 
 	public void justLive() {
 		try {
-			Thread.sleep((int) Math.random() * 1000);
 			System.out.println("Koper " + id + " : Gewoon chillen");
+			wait = (random.nextInt(4) * 1000);
+			Thread.sleep(wait);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -41,7 +48,8 @@ public class Buyer extends Thread {
 	public void buyCar() {
 		try {
 			System.out.println("Koper " + id + " : Ik zoek naar een auto");
-			Thread.sleep((int) Math.random() * 1000);
+			wait = (random.nextInt(4) * 1000);
+			Thread.sleep(wait);
 			System.out.println("Koper " + id + " : Ik heb een auto gevonden");
 		} catch (InterruptedException e) {
 			e.printStackTrace();

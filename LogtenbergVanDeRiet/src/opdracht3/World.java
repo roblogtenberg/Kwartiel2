@@ -2,7 +2,7 @@ package opdracht3;
 
 public class World {
 	private static int NR_OF_MAX_VISITORS = 10;
-	private static int NR_OF_MAX_BUYERS = 5;
+	private static int NR_OF_MAX_BUYERS = 10;
 
 	public static void main(String[] args) {
 		AutoRAI autoRAI = new AutoRAI();

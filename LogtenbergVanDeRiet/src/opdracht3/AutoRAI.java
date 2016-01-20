@@ -9,6 +9,7 @@ public class AutoRAI {
 	private Lock lock;
 	private Condition insideAsVisitor, insideAsBuyer;
 	private final int MAX_PEOPLE_INSIDE = 10;
+	private int PEOPLE_IN_ROW = 0;
 	private int nrOfPeopleInside;
 	private int nrOfBuyersAchterElkaar, nrOfBuyersInRow, nrOfVisitorsAchterElkaar;
 	private boolean ignoreBuyersInRow;
@@ -17,19 +18,6 @@ public class AutoRAI {
 		lock = new ReentrantLock();
 		insideAsVisitor = lock.newCondition();
 		insideAsBuyer = lock.newCondition();
-
-	}
-
-	public boolean full() {
-		return nrOfPeopleInside >= MAX_PEOPLE_INSIDE;
-	}
-
-	public boolean empty() {
-		return nrOfPeopleInside == 0;
-	}
-
-	public boolean noBuyerInRow() {
-		return nrOfBuyersInRow == 0;
 	}
 
 	public void toAutoRAIAsVisitor() throws InterruptedException {
@@ -42,6 +30,7 @@ public class AutoRAI {
 			nrOfVisitorsAchterElkaar++;
 			nrOfBuyersAchterElkaar = 0;
 			nrOfPeopleInside++;
+			PEOPLE_IN_ROW--;
 		} finally {
 			lock.unlock();
 		}
@@ -52,8 +41,9 @@ public class AutoRAI {
 
 		try {
 			nrOfBuyersInRow++;
-			while (!empty() && nrOfBuyersAchterElkaar <= 4) {
-				if (nrOfBuyersAchterElkaar >= 4) {
+			while (!empty() && nrOfBuyersAchterElkaar <= 3) {
+				PEOPLE_IN_ROW++;
+				if (nrOfBuyersAchterElkaar >= 3) {
 					ignoreBuyersInRow = true;
 				}
 				insideAsBuyer.await();
@@ -71,14 +61,13 @@ public class AutoRAI {
 
 		try {
 
-			System.out.println("een koper gaat naar buiten");
+			System.out.println("Er gaat een koper gaat naar buiten, Aju!");
 
 			nrOfPeopleInside = 0;
 			nrOfBuyersInRow--;
-			if (nrOfBuyersAchterElkaar >= 4) {
+			if (nrOfBuyersAchterElkaar >= 3) {
 				ignoreBuyersInRow = true;
-				System.out.println("kijkers geroepen");
-				for (int i = 0; i < MAX_PEOPLE_INSIDE; i++) {
+				for (int i = 0; i < (MAX_PEOPLE_INSIDE - PEOPLE_IN_ROW); i++) {
 					insideAsVisitor.signal();
 				}
 			} else {
@@ -97,7 +86,6 @@ public class AutoRAI {
 				ignoreBuyersInRow = false;
 			}
 			nrOfPeopleInside--;
-			System.out.println("aantal kijkers binnen: " + nrOfPeopleInside);
 			if (empty() && !noBuyerInRow()) {
 				insideAsBuyer.signal();
 			} else if (noBuyerInRow()) {
@@ -106,5 +94,17 @@ public class AutoRAI {
 		} finally {
 			lock.unlock();
 		}
+	}
+
+	public boolean full() {
+		return nrOfPeopleInside >= MAX_PEOPLE_INSIDE;
+	}
+
+	public boolean empty() {
+		return nrOfPeopleInside == 0;
+	}
+
+	public boolean noBuyerInRow() {
+		return nrOfBuyersInRow == 0;
 	}
 }
