@@ -25,7 +25,7 @@ public class FileSorter {
 		reader = new Scanner(file);
 	}
 
-	public String Sort() {
+	public void Sort() {
 		File resultFile = new File("runs.txt");
 		try {
 			// nieuwe writer naar file
@@ -56,7 +56,6 @@ public class FileSorter {
 			System.err.println("file not found");
 			e.printStackTrace();
 		}
-		return resultFile.getAbsolutePath();
 	}
 
 	public void doRun() {
