@@ -6,93 +6,105 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class AutoRAI {
 
-	private int nrOfBuyers = 0;
-	private int nrOfBuyersInside = 0;
-	private int nrOfBuyersAchterElkaar = 0;
-	private int maxNrOfBuyersAchterElkaar = 3;
-	private int maxNrOfBuyers = 0;
-	private int nrOfWaitingBuyers = 0;
-	private int nrOfVisitors = 0;
-	private int nrOfVisitorsInside = 0;
-	private int nrOfWaitingVisitors = 0;
-	private boolean buyerInBuiling = false;
-
-	Lock lock;
-	private Condition placesAvailable, visitorMayInside, buyerMayInside;
+	private Lock lock;
+	private Condition insideAsVisitor, insideAsBuyer;
+	private final int MAX_PEOPLE_INSIDE = 10;
+	private int nrOfPeopleInside;
+	private int nrOfBuyersAchterElkaar, nrOfBuyersInRow, nrOfVisitorsAchterElkaar;
+	private boolean ignoreBuyersInRow;
 
 	public AutoRAI() {
 		lock = new ReentrantLock();
-		placesAvailable = lock.newCondition();
-		visitorMayInside = lock.newCondition();
-		buyerMayInside = lock.newCondition();
+		insideAsVisitor = lock.newCondition();
+		insideAsBuyer = lock.newCondition();
+
 	}
 
-	public void toAutoRAI() throws InterruptedException {
+	public boolean full() {
+		return nrOfPeopleInside >= MAX_PEOPLE_INSIDE;
+	}
+
+	public boolean empty() {
+		return nrOfPeopleInside == 0;
+	}
+
+	public boolean noBuyerInRow() {
+		return nrOfBuyersInRow == 0;
+	}
+
+	public void toAutoRAIAsVisitor() throws InterruptedException {
+		lock.lock();
+
 		try {
-			lock.lock();
-			if (Thread.currentThread().getClass() == Visitor.class) {
-				System.out.println("Bezoeker: " + Thread.currentThread().getName() + " meld zich");
-				nrOfWaitingVisitors++;
-				while (nrOfWaitingBuyers > 0 || buyerInBuiling == true) {
-					if (nrOfBuyersInside >= maxNrOfBuyers && buyerInBuiling == false) {
-						break;
-					}
-					visitorMayInside.await();
-				}
-				nrOfWaitingVisitors--;
-				nrOfVisitorsInside++;
-			} else if (Thread.currentThread().getClass() == Buyer.class) {
-				System.out.println("Koper: " + Thread.currentThread().getName() + " meld zich");
-				nrOfWaitingBuyers++;
-				while (buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
-					buyerMayInside.await();
-				}
-				buyerInBuiling = true;
-				nrOfWaitingBuyers--;
-				nrOfBuyersAchterElkaar++;
+			while (full() || (!noBuyerInRow() && !ignoreBuyersInRow)) {
+				insideAsVisitor.await();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			nrOfVisitorsAchterElkaar++;
+			nrOfBuyersAchterElkaar = 0;
+			nrOfPeopleInside++;
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	public void leaveAutoRAI() {
+	public void toAutoRAIAsBuyer() throws InterruptedException {
+		lock.lock();
 
-		if (Thread.currentThread().getClass() == Visitor.class) {
-			System.out.println("Bezoeker: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
-			nrOfVisitorsInside--;
-			nrOfBuyersAchterElkaar = 0;
-		}
-
-		if (Thread.currentThread().getClass() == Buyer.class) {
-			System.out.println("Koper: " + Thread.currentThread().getName() + " verlaat de AutoRAI");
-			buyerInBuiling = false;
-		}
-
-		if (nrOfWaitingBuyers > 0) {
-			System.out.println("Wachtende kopers = " + nrOfWaitingBuyers);
-
-			if (nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
-				System.out.println("Te veel kopers achter elkaar!");
-				if (nrOfVisitors == 0) {
-					System.out.println("Er is geen bezoeker aan het wachten dus teller verlagen met 1");
-					nrOfBuyersAchterElkaar--;
-					buyerMayInside.signal();
-				} else {
-					sendAllVisitors();
+		try {
+			nrOfBuyersInRow++;
+			while (!empty() && nrOfBuyersAchterElkaar <= 4) {
+				if (nrOfBuyersAchterElkaar >= 4) {
+					ignoreBuyersInRow = true;
 				}
-			} else {
-				buyerMayInside.signal();
+				insideAsBuyer.await();
 			}
+			nrOfBuyersAchterElkaar++;
+			nrOfPeopleInside = 10;
+
+		} finally {
+			lock.unlock();
 		}
 	}
 
-	private void sendAllVisitors() {
-		System.out.println("Aantal lui kunnen naar binnen");
-		for (int i = 0; i < nrOfWaitingVisitors; i++) {
-			visitorMayInside.signal();
+	public void leaveAutoRAIAsBuyer() throws InterruptedException {
+		lock.lock();
+
+		try {
+
+			System.out.println("een koper gaat naar buiten");
+
+			nrOfPeopleInside = 0;
+			nrOfBuyersInRow--;
+			if (nrOfBuyersAchterElkaar >= 4) {
+				ignoreBuyersInRow = true;
+				System.out.println("kijkers geroepen");
+				for (int i = 0; i < MAX_PEOPLE_INSIDE; i++) {
+					insideAsVisitor.signal();
+				}
+			} else {
+				insideAsBuyer.signal();
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public void leaveAutoRAIAsVisitor() throws InterruptedException {
+		lock.lock();
+
+		try {
+			if (nrOfVisitorsAchterElkaar >= 10) {
+				ignoreBuyersInRow = false;
+			}
+			nrOfPeopleInside--;
+			System.out.println("aantal kijkers binnen: " + nrOfPeopleInside);
+			if (empty() && !noBuyerInRow()) {
+				insideAsBuyer.signal();
+			} else if (noBuyerInRow()) {
+				insideAsVisitor.signal();
+			}
+		} finally {
+			lock.unlock();
 		}
 	}
 }

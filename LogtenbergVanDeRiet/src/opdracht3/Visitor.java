@@ -2,36 +2,46 @@ package opdracht3;
 
 public class Visitor extends Thread {
 	private AutoRAI autoRAI;
+	private int id;
 
-	public Visitor(String name) {
-		super(name);
-		autoRAI = new AutoRAI();
+	public Visitor(int id, AutoRAI autoRAI) {
+		this.id = id;
+		this.autoRAI = autoRAI;
 	}
 
+	@Override
 	public void run() {
 		while (true) {
-			try {
-				autoRAI.toAutoRAI();
-				kijken();
-				autoRAI.leaveAutoRAI();
-				justLive();
 
+			try {
+				justLive();
+				System.out.println("Kijker " + id + " : Ik sta in de rij");
+				autoRAI.toAutoRAIAsVisitor();
+				System.out.println("Kijker " + id + " : Ik ben binnen en kijk rond");
+				watchCars();
+				System.out.println("Kijker " + id + " : Ik ben klaar met kijken en ga weg");
+				autoRAI.leaveAutoRAIAsVisitor();
+				Thread.sleep((int) Math.random() * 1000);// na het bezoeken krijgt de bezoeker gratis eten en mag daar van genieten
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+
 	}
 
-	private void justLive() throws InterruptedException {
-		System.out.println("Bezoeker: " + getVisitorName() + " is living");
-		Thread.sleep((int) 3 * 1000);
+	public void justLive() {
+		try {
+			Thread.sleep((int) Math.random() * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
-	private void kijken() throws InterruptedException {
-		System.out.println("Bezoeker: " + getVisitorName() + " is aan het rondkijken");
-	}
-
-	private String getVisitorName() {
-		return getName();
+	public void watchCars() {
+		try {
+			Thread.sleep((int) Math.random() * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }

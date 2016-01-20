@@ -2,41 +2,49 @@ package opdracht3;
 
 public class Buyer extends Thread {
 
-	private AutoRAI autoRAI;
-	private int budget;
+	private int id;
+	AutoRAI autorai;
 
-	public Buyer(String naam, int budget) {
-		super(naam);
-		autoRAI = new AutoRAI();
-		this.budget = budget;
+	public Buyer(int id, AutoRAI autoRAI) {
+		this.id = id;
+		autorai = autoRAI;
 	}
 
 	@Override
 	public void run() {
+		while (true) {
+
+			try {
+				justLive();
+				System.out.println("Koper " + id + " : Ik sta in de rij");
+				autorai.toAutoRAIAsBuyer();
+				System.out.println("Koper " + id + " : Ik ga naar binnen om een auto te kopen");
+				buyCar();
+				System.out.println("Koper " + id + " : een auto gekocht");
+				autorai.leaveAutoRAIAsBuyer();
+				Thread.sleep((int) Math.random() * 1000);// tijd dat de koper geen auto mag kopen
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void justLive() {
 		try {
-			autoRAI.toAutoRAI();
-			kijken();
-			autoRAI.leaveAutoRAI();
-			justLive();
+			Thread.sleep((int) Math.random() * 1000);
+			System.out.println("Koper " + id + " : Gewoon chillen");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void justLive() throws InterruptedException {
-		System.out.println("Koper: " + getBuyerName() + " is living");
-		Thread.sleep((int) 5 * 1000);
-	}
-
-	private void kijken() throws InterruptedException {
-		System.out.println("Koper: " + getBuyerName() + " is aan het rondkijken");
-	}
-
-	public String getBuyerName() {
-		return getName();
-	}
-
-	public int getBudget() {
-		return budget;
+	public void buyCar() {
+		try {
+			System.out.println("Koper " + id + " : Ik zoek naar een auto");
+			Thread.sleep((int) Math.random() * 1000);
+			System.out.println("Koper " + id + " : Ik heb een auto gevonden");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 }
