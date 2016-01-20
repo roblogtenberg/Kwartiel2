@@ -39,12 +39,12 @@ public class AutoRAI {
 					}
 					visitorMayInside.await();
 				}
-				nrOfWaitingVisitors++;
+				nrOfWaitingVisitors--;
 				nrOfVisitorsInside++;
 			} else if (Thread.currentThread().getClass() == Buyer.class) {
 				System.out.println("Koper: " + Thread.currentThread().getName() + " meld zich");
 				nrOfWaitingBuyers++;
-				while (nrOfVisitorsInside > 0 || buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
+				while (buyerInBuiling == true || nrOfBuyersAchterElkaar >= maxNrOfBuyersAchterElkaar) {
 					buyerMayInside.await();
 				}
 				buyerInBuiling = true;

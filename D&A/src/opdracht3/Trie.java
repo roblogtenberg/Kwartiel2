@@ -2,7 +2,7 @@ package opdracht3;
 
 import opdracht3.interfaces.TrieInterface;
 
-public class Trie implements TrieInterface<D> {
+public class Trie<D> implements TrieInterface<D> {
 
 	@Override
 	public void insert(String word, D data) {

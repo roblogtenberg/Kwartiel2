@@ -44,10 +44,13 @@ public class Company {
 			while (true) {
 				try {
 					problem.release();
+					System.out.println("problem released");
 					invitation.acquire();
+					System.out.println("invitation acquired");
 					travel();
 					readyForConversation.release();
 					userConsultation.acquire();
+					consult();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -62,6 +65,16 @@ public class Company {
 			} catch (InterruptedException e) {
 			}
 		}
+		
+		private void consult() {
+			try {
+				System.out.println(getName() + " consulting");
+				Thread.sleep((int) (Math.random() * 1000));
+				System.out.println(getName() + " done consulting");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	class SoftwareProgrammer extends Thread {
@@ -71,8 +84,10 @@ public class Company {
 			while (true) {
 				try {
 					available.release();
-					if(consulting.availablePermits() > 0) {
+					if(consulting.availablePermits() == 0 && available.availablePermits() <= 1) {
+						System.out.println("Programmer waiting for invitation....");
 						invitation.acquire();
+						System.out.println(".....Programmer invitatino acquired");
 						readyForConversation.release();
 						userConsultation.acquire();
 						consult();
@@ -112,11 +127,14 @@ public class Company {
 			while (true) {
 				try {
 					problem.acquire();
+					System.out.println("Problem acquired");
 					available.acquire();
-					
+					System.out.println("Available acquired");
 					int permits = problem.availablePermits() + 1;
 					System.out.println("Permits drained: " + problem.drainPermits());
 					invitation.release(permits);
+					System.out.println(invitation.getQueueLength());
+					System.out.println("Invitations released: " + permits);
 					readyForConversation.acquire(permits);
 					userConsultation.release(permits);
 					consulting.release();
