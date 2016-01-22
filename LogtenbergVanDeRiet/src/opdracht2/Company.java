@@ -4,24 +4,27 @@ import java.util.concurrent.Semaphore;
 
 public class Company {
 
-	private Semaphore problem, invitation, userConsultation, developerConsultation, report, readyForConversation, available, consulting;
+	private Semaphore invitation, usersReadyForConversation, devReadyForConversation, developerRequestedMeetingRoom, inMeetingRoom, meetingDone, mutexDevelopersWaiting, mutexEndUsersWithProblem;
 	private SoftwareProgrammer[] softwareProgrammers;
 	private ProductOwner productOwner;
 	private User[] users;
+	private int developersWaiting = 0, endUsersWithProblem = 0;
+	private boolean meetingHappening;
 
 	public Company() {
 		softwareProgrammers = new SoftwareProgrammer[5];
 		users = new User[8];
 		productOwner = new ProductOwner();
 
-		problem = new Semaphore(0, true);
 		invitation = new Semaphore(0, true);
-		userConsultation = new Semaphore(0, true);
-		developerConsultation = new Semaphore(0, true);
-		report = new Semaphore(0, true);
-		readyForConversation = new Semaphore(0, true);
-		available = new Semaphore(0, true);
-		consulting = new Semaphore(0, true);		
+		usersReadyForConversation = new Semaphore(0, true);
+		devReadyForConversation = new Semaphore(0, true);
+		developerRequestedMeetingRoom = new Semaphore(0, true);
+		inMeetingRoom = new Semaphore(0, true);
+		meetingDone = new Semaphore(0, true);
+
+		mutexDevelopersWaiting = new Semaphore(1, true);
+		mutexEndUsersWithProblem = new Semaphore(1, true);
 
 		productOwner.start();
 
@@ -43,14 +46,15 @@ public class Company {
 			setName("user");
 			while (true) {
 				try {
-					problem.release();
-					System.out.println("problem released");
+					mutexEndUsersWithProblem.acquire();
+					endUsersWithProblem++;
+					mutexEndUsersWithProblem.release();
 					invitation.acquire();
-					System.out.println("invitation acquired");
 					travel();
-					readyForConversation.release();
-					userConsultation.acquire();
+					usersReadyForConversation.release();
+					inMeetingRoom.release();
 					consult();
+					meetingDone.acquire();
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -65,7 +69,7 @@ public class Company {
 			} catch (InterruptedException e) {
 			}
 		}
-		
+
 		private void consult() {
 			try {
 				System.out.println(getName() + " consulting");
@@ -83,17 +87,19 @@ public class Company {
 			setName("programmer");
 			while (true) {
 				try {
-					available.release();
-					if(consulting.availablePermits() == 0 && available.availablePermits() <= 1) {
-						System.out.println("Programmer waiting for invitation....");
-						invitation.acquire();
-						System.out.println(".....Programmer invitatino acquired");
-						readyForConversation.release();
-						userConsultation.acquire();
-						consult();
-					}
-					available.acquire();
 					work();
+					if (!meetingHappening) {
+						mutexDevelopersWaiting.acquire();
+						developersWaiting++;
+						mutexDevelopersWaiting.release();
+						devReadyForConversation.acquire();
+
+						if (developerRequestedMeetingRoom.tryAcquire()) {
+							inMeetingRoom.release();
+							consult();
+							meetingDone.acquire();
+						}
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
@@ -108,7 +114,7 @@ public class Company {
 			} catch (InterruptedException e) {
 			}
 		}
-		
+
 		private void consult() {
 			try {
 				System.out.println(getName() + " consulting");
@@ -126,29 +132,48 @@ public class Company {
 			setName("productowner");
 			while (true) {
 				try {
-					problem.acquire();
-					System.out.println("Problem acquired");
-					available.acquire();
-					System.out.println("Available acquired");
-					int permits = problem.availablePermits() + 1;
-					System.out.println("Permits drained: " + problem.drainPermits());
-					invitation.release(permits);
-					System.out.println(invitation.getQueueLength());
-					System.out.println("Invitations released: " + permits);
-					readyForConversation.acquire(permits);
-					userConsultation.release(permits);
-					consulting.release();
-					
-					consult();
-					
-					consulting.acquire();
-					available.release();
+					System.out.println("Begin");
+					if (endUsersWithProblem > 0) {
+						if (developersWaiting > 0) {
+							meetingHappening = true;
+							mutexEndUsersWithProblem.acquire();
+							final int endUsers = endUsersWithProblem;
+							endUsersWithProblem = 0;
+							mutexEndUsersWithProblem.release();
+							// send invitations
+							invitation.release(endUsers);
+							// wait for users to arrive
+							usersReadyForConversation.acquire(endUsers);
+							mutexDevelopersWaiting.acquire();
+							// get one developer
+							developerRequestedMeetingRoom.release();
+							// the rest of developers gets back to work
+							devReadyForConversation.release(developersWaiting);
+							developersWaiting = 0;
+							mutexDevelopersWaiting.release();
+							inMeetingRoom.acquire(endUsers + 1);
+							consult();
+							meetingDone.release(endUsers + 1);
+							meetingHappening = false;
+						}
+					} else if (developersWaiting > 3) {
+						meetingHappening = true;
+						developerRequestedMeetingRoom.release(3);
+						mutexDevelopersWaiting.acquire();
+						devReadyForConversation.release(developersWaiting);
+						developersWaiting = 0;
+						mutexDevelopersWaiting.release();
+						inMeetingRoom.acquire(3);
+						consult();
+						meetingDone.release(3);
+						meetingHappening = false;
+					}
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		
+
 		private void consult() {
 			try {
 				System.out.println(getName() + " consulting");
