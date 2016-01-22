@@ -6,9 +6,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Main {
-	public static final String TESTFILEPATH = "testGen.txt";
-	public static final String DESCENDING = "deCen.txt";
-	public static final String ASCENDING = "asCen.txt";
+	public static final String DESCENDING = "DESCENDING.txt";
+	public static final String ASCENDING = "ASCENDING.txt";
 	public static final String RANDOM100 = "Random100.txt";
 	public static final String RANDOM20 = "Random20.txt";
 
@@ -27,7 +26,7 @@ public class Main {
 		}
 	}
 
-	public static File generateTestFile(String path, int amountItems) {
+	public static File generateFileWithRandomNumbers(String path, int amountItems) {
 		File f = new File(path);
 		try {
 			PrintWriter pw = new PrintWriter(f);
@@ -38,7 +37,6 @@ public class Main {
 			pw.close();
 			return f;
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
@@ -80,7 +78,7 @@ public class Main {
 	public static void heap20Array100Random() throws IOException {
 		File file = null;
 
-		file = generateTestFile(RANDOM100, 100);
+		file = generateFileWithRandomNumbers(RANDOM100, 100);
 
 		FileSorter sorter;
 		try {
@@ -97,7 +95,7 @@ public class Main {
 	public static void heap50Array20Random() throws IOException {
 		File file = null;
 
-		file = generateTestFile(RANDOM20, 20);
+		file = generateFileWithRandomNumbers(RANDOM20, 20);
 
 		FileSorter sorter;
 		try {

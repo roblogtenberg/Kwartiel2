@@ -4,12 +4,13 @@ import java.util.ArrayList;
 
 import opdracht3.interfaces.TrieInterface;
 
-public class Trie<D> implements TrieInterface<D> {
+public class Node<D> implements TrieInterface<D> {
+
+	private D value;
+	private ArrayList<Node<D>> children = new ArrayList<Node<D>>();
 
 	@Override
 	public void insert(String word, D data) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -30,11 +31,11 @@ public class Trie<D> implements TrieInterface<D> {
 		sb.append("digraph mijngraaf {\n");
 
 		// Collect all the nodes
-		ArrayList<Node<T>> lookup = new ArrayList<Node<T>>();
+		ArrayList<Node<D>> lookup = new ArrayList<Node<D>>();
 		lookup.add(this);
 		for (int i = 0; i < lookup.size(); i++) {
-			Node<T> currentNode = lookup.get(i);
-			for (Node<T> child : currentNode.children) {
+			Node<D> currentNode = lookup.get(i);
+			for (Node<D> child : currentNode.children) {
 				if (!lookup.contains(child)) {
 					lookup.add(child);
 				}
@@ -48,8 +49,8 @@ public class Trie<D> implements TrieInterface<D> {
 
 		// Create edges
 		for (int i = 0; i < lookup.size(); i++) {
-			Node<T> node = lookup.get(i);
-			for (Node<T> child : node.children) {
+			Node<D> node = lookup.get(i);
+			for (Node<D> child : node.children) {
 				sb.append(String.format("n%d -> n%d;\n", i, lookup.indexOf(child)));
 			}
 		}
