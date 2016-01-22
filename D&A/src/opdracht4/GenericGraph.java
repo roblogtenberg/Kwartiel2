@@ -51,4 +51,8 @@ public class GenericGraph {
 		}
 		return startingVertexes;
 	}
+	
+	public List<Vertex> getVertexes() {
+		return vertexes;
+	}
 }

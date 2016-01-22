@@ -48,6 +48,6 @@ public class Vertex {
 	
 	@Override
 	public String toString() {
-		return name;
+		return name + " " + earliest + " " + latest;
 	}
 }
