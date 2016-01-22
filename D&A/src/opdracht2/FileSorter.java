@@ -8,7 +8,6 @@ import java.util.Scanner;
 public class FileSorter {
 	RSHeap<Integer> heap;
 	Scanner reader;
-	Scanner reader2;
 	PrintWriter writer;
 	int runs = 0;
 	int elementenInRun = 0;
