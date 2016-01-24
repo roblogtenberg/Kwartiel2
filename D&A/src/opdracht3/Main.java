@@ -1,17 +1,16 @@
 package opdracht3;
 
-import java.util.ArrayList;
-
 public class Main {
 
 	public static void main(String[] args) {
-		Node<Integer> trie = new Node<Integer>();
-		String word = "knul";
+		RedTrie<Integer> trie = new RedTrie<Integer>();
 
-		trie.insert(word, 1);
-		trie.insert("knulletje", 1);
+		trie.insert("aap", 1);
+		trie.insert("aapje", 2);
+		trie.insert("aapjes", 3);
+		trie.insert("aaphoofd", 4);
 
-		trie.toDOTString();
+		System.out.println(trie.toDOTString());
 
 	}
 
