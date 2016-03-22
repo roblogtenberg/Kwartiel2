@@ -1,5 +1,6 @@
 package opdracht3;
 
+
 import java.util.Random;
 
 public class Visitor extends Thread {

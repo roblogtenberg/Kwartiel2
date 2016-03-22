@@ -1,5 +1,6 @@
 package opdracht3;
 
+
 public class World {
 	private static int NR_OF_MAX_VISITORS = 10;
 	private static int NR_OF_MAX_BUYERS = 10;

@@ -1,6 +1,7 @@
 package opdracht1;
 
 
+
 public class SortRunnable implements Runnable{
 
 	private int[] array;

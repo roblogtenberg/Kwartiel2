@@ -1,5 +1,6 @@
 package opdracht2;
 
+
 import java.util.concurrent.Semaphore;
 
 public class Company {
@@ -29,21 +30,28 @@ public class Company {
 		productOwner.start();
 
 		for (int i = 0; i < softwareProgrammers.length; i++) {
-			softwareProgrammers[i] = new SoftwareProgrammer();
+			softwareProgrammers[i] = new SoftwareProgrammer(i);
 			softwareProgrammers[i].start();
 		}
 
 		for (int i = 0; i < users.length; i++) {
-			users[i] = new User();
+			users[i] = new User(i);
 			users[i].start();
 		}
 
 	}
 
 	class User extends Thread {
+		
+		private int id;
+		
+		public User(int id) {
+			this.id = id;
+		}
+		
 		@Override
 		public void run() {
-			setName("user");
+			setName("user " + id);
 			while (true) {
 				try {
 					mutexEndUsersWithProblem.acquire();
@@ -82,9 +90,16 @@ public class Company {
 	}
 
 	class SoftwareProgrammer extends Thread {
+		
+		private int id;
+		
+		public SoftwareProgrammer(int id) {
+			this.id = id;
+		}
+		
 		@Override
 		public void run() {
-			setName("programmer");
+			setName("programmer " + id);
 			while (true) {
 				try {
 					work();
@@ -132,7 +147,7 @@ public class Company {
 			setName("productowner");
 			while (true) {
 				try {
-					System.out.println("Begin");
+					System.out.println(getName() + " begin");
 					if (endUsersWithProblem > 0) {
 						if (developersWaiting > 0) {
 							meetingHappening = true;
