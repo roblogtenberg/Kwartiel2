@@ -147,7 +147,7 @@ public class Company {
 			setName("productowner");
 			while (true) {
 				try {
-					System.out.println(getName() + " begin");
+					life();
 					if (endUsersWithProblem > 0) {
 						if (developersWaiting > 0) {
 							meetingHappening = true;
@@ -194,6 +194,15 @@ public class Company {
 				System.out.println(getName() + " consulting");
 				Thread.sleep((int) (Math.random() * 1000));
 				System.out.println(getName() + " done consulting");
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		private void life() {
+			try {
+				System.out.println(getName() + " just living");
+				Thread.sleep((int) (Math.random() * 1000));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
