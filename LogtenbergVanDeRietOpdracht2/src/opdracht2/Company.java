@@ -31,7 +31,7 @@ public class Company {
 
 		for (int i = 0; i < softwareProgrammers.length; i++) {
 			softwareProgrammers[i] = new SoftwareProgrammer(i);
-			softwareProgrammers[i].start();
+			//softwareProgrammers[i].start();
 		}
 
 		for (int i = 0; i < users.length; i++) {
@@ -103,16 +103,18 @@ public class Company {
 			while (true) {
 				try {
 					work();
-					if (!meetingHappening) {
-						mutexDevelopersWaiting.acquire();
-						developersWaiting++;
-						mutexDevelopersWaiting.release();
-						devReadyForConversation.acquire();
-
-						if (developerRequestedMeetingRoom.tryAcquire()) {
-							inMeetingRoom.release();
-							consult();
-							meetingDone.acquire();
+					if(productOwner.isAlive()) {
+						if (!meetingHappening) {
+							mutexDevelopersWaiting.acquire();
+							developersWaiting++;
+							mutexDevelopersWaiting.release();
+							devReadyForConversation.acquire();
+	
+							if (developerRequestedMeetingRoom.tryAcquire()) {
+								inMeetingRoom.release();
+								consult();
+								meetingDone.acquire();
+							}
 						}
 					}
 				} catch (InterruptedException e) {
