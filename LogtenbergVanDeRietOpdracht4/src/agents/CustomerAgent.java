@@ -6,7 +6,7 @@ import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import config.AplConfig;
+import configuration.Config;
 import messages.Reservation;
 import messages.ReservationStatus;
 import messages.TicketRequest;
@@ -96,7 +96,7 @@ public class CustomerAgent extends UntypedActor {
 	public ReservationStatusCode payOrCancel() {
 		Random r = new Random();
 		int result = r.nextInt(100 - 1) + 1;
-		if (result < AplConfig.PERCENTAGE_KANS_OP_ANNULEREN) {
+		if (result < Config.PERCENTAGE_KANS_OP_ANNULEREN) {
 			return ReservationStatusCode.STATUS_CANCELLED_RESERVATION;
 		} else {
 			return ReservationStatusCode.STATUS_TICKETS_BOUGHT;

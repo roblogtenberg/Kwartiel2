@@ -2,9 +2,11 @@ package section;
 
 import java.util.ArrayList;
 import java.util.List;
-import config.AplConfig;
+
+import configuration.Config;
 
 public class Row {
+	public final static int AANTAL_RIJEN_PER_VAK = 4;
 	private ArrayList<Seat> seats = new ArrayList<>();
 
 	public Row(int nrOfSeats) {
@@ -61,7 +63,7 @@ public class Row {
 	public String stringRow() {
 		StringBuilder b = new StringBuilder();
 		b.append("<");
-		int idSize = (AplConfig.AANTAL_KLANTEN + "").length(); // for an
+		int idSize = (Config.AANTAL_KLANTEN + "").length(); // for an
 																// outlining
 																// purpose
 		for (Seat s : seats) {
