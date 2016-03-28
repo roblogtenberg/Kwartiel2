@@ -38,7 +38,7 @@ public class Visitor extends Thread {
 
 	public void justLive() {
 		try {
-			System.out.println("Kijker " + id + " : Gewoon chillen");
+			System.out.println("Kijker " + id + " : Just live en kalm an doen");
 			wait = (random.nextInt(4) * 1000);
 			Thread.sleep(wait);
 		} catch (InterruptedException e) {
