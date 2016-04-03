@@ -5,7 +5,7 @@ import java.util.concurrent.Semaphore;
 
 public class Company {
 
-	private Semaphore invitation, usersReadyForConversation, devReadyForConversation, developerRequestedMeetingRoom, inMeetingRoom, meetingDone, mutexDevelopersWaiting, mutexEndUsersWithProblem;
+	private Semaphore invitation, usersReadyForConversation, devReadyForConversation, developerRequestedMeetingRoom, inMeetingRoom, meetingDone, productOwnerCheck, mutexDevelopersWaiting, mutexEndUsersWithProblem;
 	private SoftwareProgrammer[] softwareProgrammers;
 	private ProductOwner productOwner;
 	private User[] users;
@@ -14,7 +14,7 @@ public class Company {
 
 	public Company() {
 		softwareProgrammers = new SoftwareProgrammer[5];
-		users = new User[8];
+		users = new User[2];
 		productOwner = new ProductOwner();
 
 		invitation = new Semaphore(0, true);
@@ -23,7 +23,8 @@ public class Company {
 		developerRequestedMeetingRoom = new Semaphore(0, true);
 		inMeetingRoom = new Semaphore(0, true);
 		meetingDone = new Semaphore(0, true);
-
+		productOwnerCheck = new Semaphore(0, true);
+		
 		mutexDevelopersWaiting = new Semaphore(1, true);
 		mutexEndUsersWithProblem = new Semaphore(1, true);
 
@@ -31,7 +32,7 @@ public class Company {
 
 		for (int i = 0; i < softwareProgrammers.length; i++) {
 			softwareProgrammers[i] = new SoftwareProgrammer(i);
-			//softwareProgrammers[i].start();
+			softwareProgrammers[i].start();
 		}
 
 		for (int i = 0; i < users.length; i++) {
@@ -57,6 +58,7 @@ public class Company {
 					mutexEndUsersWithProblem.acquire();
 					endUsersWithProblem++;
 					mutexEndUsersWithProblem.release();
+					productOwnerCheck.release();
 					invitation.acquire();
 					travel();
 					usersReadyForConversation.release();
@@ -108,6 +110,7 @@ public class Company {
 							mutexDevelopersWaiting.acquire();
 							developersWaiting++;
 							mutexDevelopersWaiting.release();
+							productOwnerCheck.release();
 							devReadyForConversation.acquire();
 	
 							if (developerRequestedMeetingRoom.tryAcquire()) {
@@ -150,6 +153,7 @@ public class Company {
 			while (true) {
 				try {
 					life();
+					productOwnerCheck.acquire();
 					if (endUsersWithProblem > 0) {
 						if (developersWaiting > 0) {
 							meetingHappening = true;
