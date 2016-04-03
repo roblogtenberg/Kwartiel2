@@ -28,8 +28,7 @@ public class AutoRAI {
 
 		try {
 			nrOfVisitorsInRow++;
-			System.out.println("Visitor enters row");
-			this.betterString(false);
+			System.out.println("Visitor enters row\n" + this.betterString(false));
 			while (full() || (!noBuyerInRow() && !ignoreBuyersInRow)) {
 				insideAsVisitor.await();
 			}
@@ -38,8 +37,7 @@ public class AutoRAI {
 			nrOfPeopleInside++;
 			// PEOPLE_IN_ROW--;
 			nrOfVisitorsInRow--;
-			System.out.println("Visitor inside building");
-			this.betterString(false);
+			System.out.println("Visitor inside building\n" + this.betterString(false));
 		} finally {
 			lock.unlock();
 		}
@@ -50,8 +48,7 @@ public class AutoRAI {
 
 		try {
 			nrOfBuyersInRow++;
-			System.out.println("Buyer enters row");
-			this.betterString(true);
+			System.out.println("Buyer enters row\n" + this.betterString(true));
 			while (!empty() && nrOfBuyersAchterElkaar <= 3) {
 				// PEOPLE_IN_ROW++;
 				if (nrOfBuyersAchterElkaar >= 3) {
@@ -62,8 +59,7 @@ public class AutoRAI {
 			nrOfBuyersAchterElkaar++;
 			nrOfPeopleInside = 10;
 			nrOfBuyersInRow--;
-			System.out.println("Buyer inside builing");
-			this.betterString(true);
+			System.out.println("Buyer inside building\n" + this.betterString(true));
 		} finally {
 			lock.unlock();
 		}
@@ -77,8 +73,7 @@ public class AutoRAI {
 			// System.out.println("Er gaat een koper gaat naar buiten, Aju!");
 
 			nrOfPeopleInside = 0;
-			System.out.println("Buyer leaves building");
-			this.betterString(false);
+			System.out.println("Buyer leaves building\n" + this.betterString(true));
 			if (nrOfBuyersAchterElkaar >= 3) {
 				ignoreBuyersInRow = true;
 				for (int i = 0; i < nrOfVisitorsInRow && i < MAX_PEOPLE_INSIDE; i++) {
@@ -105,8 +100,7 @@ public class AutoRAI {
 			} else if (noBuyerInRow()) {
 				insideAsVisitor.signal();
 			}
-			System.out.println("Visitor leaves building");
-			this.betterString(false);
+			System.out.println("Visitor leaves building\n" + this.betterString(false));
 		} finally {
 			lock.unlock();
 		}
@@ -124,12 +118,14 @@ public class AutoRAI {
 		return nrOfBuyersInRow == 0;
 	}
 
-	public void betterString(boolean isBuyer) {
+	public String betterString(boolean isBuyer) {
+		String betterString;
 		if (isBuyer == true) {
-			System.out.println("Buyer in building: " + 1 + "\n" + "Buyers in row:\t" + nrOfBuyersInRow + "\n" + "Visitors in row: " + nrOfVisitorsInRow + "\n");
+			betterString = "Buyer in building: " + 1 + "\n" + "Buyers in row:\t" + nrOfBuyersInRow + "\n" + "Visitors in row: " + nrOfVisitorsInRow + "\n";
 		} else {
-			System.out.println("Visitor(s) in building: " + nrOfPeopleInside + "\n" + "Buyers in row:\t" + nrOfBuyersInRow + "\n" + "Visitors in row: " + nrOfVisitorsInRow + "\n");
+			betterString = "Visitor(s) in building: " + nrOfPeopleInside + "\n" + "Buyers in row:\t" + nrOfBuyersInRow + "\n" + "Visitors in row: " + nrOfVisitorsInRow + "\n";
 		}
+		return betterString;
 	}
 
 	public static AutoRAI getInstance() {
