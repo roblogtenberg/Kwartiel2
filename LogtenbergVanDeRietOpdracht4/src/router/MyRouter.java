@@ -29,33 +29,25 @@ public class MyRouter extends UntypedActor {
 		ActorRef floor = getContext().actorOf(Props.create(SectionAgent.class, Section.FLOOR), Section.FLOOR);
 		sectionAgents.put(Section.FLOOR, floor);
 
-		ActorRef firstRingNorth = getContext().actorOf(Props.create(SectionAgent.class, Section.FIRST_RING_NORTH),
-				Section.FIRST_RING_NORTH);
+		ActorRef firstRingNorth = getContext().actorOf(Props.create(SectionAgent.class, Section.FIRST_RING_NORTH), Section.FIRST_RING_NORTH);
 		sectionAgents.put(Section.FIRST_RING_NORTH, firstRingNorth);
 
-		ActorRef firstRingSouth = getContext().actorOf(Props.create(SectionAgent.class, Section.FIRST_RING_SOUTH),
-				Section.FIRST_RING_SOUTH);
+		ActorRef firstRingSouth = getContext().actorOf(Props.create(SectionAgent.class, Section.FIRST_RING_SOUTH), Section.FIRST_RING_SOUTH);
 		sectionAgents.put(Section.FIRST_RING_SOUTH, firstRingSouth);
 
-		ActorRef firstRingWest = getContext().actorOf(Props.create(SectionAgent.class, Section.FIRST_RING_WEST),
-				Section.FIRST_RING_WEST);
+		ActorRef firstRingWest = getContext().actorOf(Props.create(SectionAgent.class, Section.FIRST_RING_WEST), Section.FIRST_RING_WEST);
 		sectionAgents.put(Section.FIRST_RING_WEST, firstRingWest);
 
-		ActorRef secondRingNorth = getContext().actorOf(Props.create(SectionAgent.class, Section.SECOND_RING_NORTH),
-				Section.SECOND_RING_NORTH);
+		ActorRef secondRingNorth = getContext().actorOf(Props.create(SectionAgent.class, Section.SECOND_RING_NORTH), Section.SECOND_RING_NORTH);
 		sectionAgents.put(Section.SECOND_RING_NORTH, secondRingNorth);
 
-		ActorRef secondRingSouth = getContext().actorOf(Props.create(SectionAgent.class, Section.SECOND_RING_SOUTH),
-				Section.SECOND_RING_SOUTH);
+		ActorRef secondRingSouth = getContext().actorOf(Props.create(SectionAgent.class, Section.SECOND_RING_SOUTH), Section.SECOND_RING_SOUTH);
 		sectionAgents.put(Section.SECOND_RING_SOUTH, secondRingSouth);
 
-		ActorRef secondRingWest = getContext().actorOf(Props.create(SectionAgent.class, Section.SECOND_RING_WEST),
-				Section.SECOND_RING_WEST);
+		ActorRef secondRingWest = getContext().actorOf(Props.create(SectionAgent.class, Section.SECOND_RING_WEST), Section.SECOND_RING_WEST);
 		sectionAgents.put(Section.SECOND_RING_WEST, secondRingWest);
 
-		router = getContext().actorOf(
-				new RoundRobinPool(nrOfDistributionAgents).props(Props.create(DistributionAgent.class, sectionAgents)),
-				"DistributionAgent");
+		router = getContext().actorOf(new RoundRobinPool(nrOfDistributionAgents).props(Props.create(DistributionAgent.class, sectionAgents)),"DistributionAgent");
 	}
 
 	@Override
